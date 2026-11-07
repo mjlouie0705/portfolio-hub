@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="description" content="학생 개인 포트폴리오를 주제로 만든 웹앱들을 모아 두는 허브">
+  <title>포트폴리오 공작소</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Gaegu:wght@400;700&family=Geist:wght@400;500&family=Gowun+Dodum&family=Jua&display=swap">
+  <link rel="stylesheet" href="assets/base.css">
+  <link rel="stylesheet" href="assets/hub.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand-mark" href="./" aria-label="포트폴리오 공작소 홈">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 22c0-2 2-3 4-2l2 1V8a2.5 2.5 0 0 1 5 0v9l9 1.5c2.5.4 4 2.4 3.6 4.9L30 31c-.4 2.6-2.6 4-5 4H17c-2 0-3.3-.8-4.4-2.2L8 26z" fill="#fdfbf9" stroke="#171717" stroke-width="2" stroke-linejoin="round"/><path d="M19 17v6M23.5 18v5M28 19v4" stroke="#171717" stroke-width="2" stroke-linecap="round"/></svg>
+    </a>
+    <a class="pill" href="#shelf">앱 둘러보기</a>
+  </header>
+
+  <main>
+    <section class="hero wrap" id="hero">
+      <div class="hero-copy">
+        <p class="hand caption">dear 선생님 &amp; 친구들,</p>
+        <h1 class="display">포트폴리오<br>공작소</h1>
+        <p class="body lede">학생 포트폴리오를 주제로 바이브 코딩한 작은 웹앱들이 한 권씩 꽂히는 책장이에요. 하나씩 만들 때마다 여기에 <span class="marker">진짜로!</span> 쌓여요.</p>
+        <a class="pill" href="apps/portfolio/">첫 번째 앱 열기</a>
+        <p class="fine preorder">지금 <span id="live-count">1</span>개 운영 중 · 다음 앱 준비 중</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="notebook big brown">
+          <div class="name-label">
+            <div class="row"><span class="k">이름</span><span class="v">포트폴리오 공작소</span></div>
+            <div class="row"><span class="k">분류</span><span class="v">웹앱 허브</span></div>
+            <div class="row"><span class="k">번호</span><span class="v">no. 00</span></div>
+          </div>
+        </div>
+        <p class="hand arrow-note">우리 반 앱 책장</p>
+        <svg class="arrow" viewBox="0 0 120 90"><path d="M8 10c30-6 62 4 78 26 8 11 10 24 8 40m0 0-9-10m9 10 8-11" fill="none" stroke="#171717" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </section>
+
+    <section class="wrap shelf" id="shelf" aria-labelledby="shelf-title">
+      <div class="shelf-head">
+        <p class="hand">like making</p>
+        <h2 class="heading" id="shelf-title">우리가 만든 앱. 우리 방식대로.</h2>
+      </div>
+      <ul class="app-grid" id="app-grid"></ul>
+    </section>
+
+    <section class="wrap how" aria-labelledby="how-title">
+      <div class="how-card">
+        <h2 class="heading" id="how-title">새 앱을 꽂는 방법</h2>
+        <ol>
+          <li><code>apps/새앱이름/</code> 폴더에 <code>index.html</code>을 만들어요.</li>
+          <li><code>apps.js</code>의 <code>APPS</code> 목록에 한 줄을 추가해요.</li>
+          <li>커밋하고 푸시하면 GitHub Pages에 자동으로 반영돼요.</li>
+        </ol>
+        <p class="fine">모든 앱은 이름·학교·연락처 같은 실제 개인정보를 공개 저장소에 올리지 않는 것을 원칙으로 해요.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-band">
+    <div class="wrap">
+      <p class="big">끝까지 봐줘서<br>고마워요!</p>
+      <p>© 2026 포트폴리오 공작소 · 학생 포트폴리오 웹앱 허브</p>
+    </div>
+  </footer>
+
+  <script type="module" src="assets/hub.js"></script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>학생 포트폴리오</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Gaegu:wght@400;700&family=Geist:wght@400;500&family=Gowun+Dodum&family=Jua&display=swap">
+  <link rel="stylesheet" href="../../assets/base.css">
+  <link rel="stylesheet" href="../../assets/hub.css">
+  <link rel="stylesheet" href="portfolio.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand-mark" href="../../" aria-label="허브로 돌아가기">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 22c0-2 2-3 4-2l2 1V8a2.5 2.5 0 0 1 5 0v9l9 1.5c2.5.4 4 2.4 3.6 4.9L30 31c-.4 2.6-2.6 4-5 4H17c-2 0-3.3-.8-4.4-2.2L8 26z" fill="#fdfbf9" stroke="#171717" stroke-width="2" stroke-linejoin="round"/><path d="M19 17v6M23.5 18v5M28 19v4" stroke="#171717" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>허브로</span>
+    </a>
+    <button class="pill" id="toggle-edit" type="button" aria-pressed="false">편집하기</button>
+  </header>
+
+  <div class="wrap toolbar no-print" id="toolbar" hidden>
+    <p class="fine privacy">✎ 편집 모드예요. 내용은 <strong>이 기기의 브라우저에만</strong> 저장되고 어디에도 전송되지 않아요. 공용 컴퓨터라면 끝나고 ‘초기화’를 눌러 주세요.</p>
+    <div class="tool-row">
+      <button class="pill small" type="button" data-act="profile">프로필 수정</button>
+      <button class="pill small" type="button" data-act="export">내보내기(.json)</button>
+      <label class="pill small file-pill">불러오기<input type="file" id="import-file" accept="application/json,.json" class="sr-only"></label>
+      <button class="pill small" type="button" data-act="print">인쇄 · PDF</button>
+      <button class="pill small danger" type="button" data-act="reset">초기화</button>
+    </div>
+  </div>
+
+  <main>
+    <section class="wrap p-hero">
+      <div class="p-hero-copy">
+        <p class="hand caption" id="greeting"></p>
+        <h1 class="display" id="hello"></h1>
+        <p class="body intro" id="intro"></p>
+        <a class="pill" href="#works">내 작품 보러 가기</a>
+        <p class="fine" id="updated"></p>
+      </div>
+      <div class="p-hero-art">
+        <div class="notebook big brown" aria-label="이름표">
+          <div class="name-label">
+            <div class="row"><span class="k">이름</span><span class="v" id="lbl-name"></span></div>
+            <div class="row"><span class="k">학년·반</span><span class="v" id="lbl-class"></span></div>
+            <div class="row"><span class="k">번호</span><span class="v" id="lbl-no"></span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap block" aria-labelledby="about-title">
+      <div class="block-head">
+        <p class="hand">this is me</p>
+        <h2 class="heading" id="about-title">나는 이런 걸 잘해요</h2>
+      </div>
+      <ul class="skill-list" id="skills"></ul>
+      <div class="goal card" id="goal-card">
+        <p class="hand">올해의 목표</p>
+        <p class="body" id="goal"></p>
+      </div>
+    </section>
+
+    <section class="wrap block" id="works" aria-labelledby="works-title">
+      <div class="block-head row-head">
+        <div>
+          <p class="hand">a big blue parchi</p>
+          <h2 class="heading" id="works-title">내 작품들</h2>
+        </div>
+        <button class="pill small edit-only" type="button" data-act="add-project">+ 작품 추가</button>
+      </div>
+      <div class="filters" id="filters" role="group" aria-label="분류 필터"></div>
+      <ul class="work-grid" id="work-grid"></ul>
+      <p class="empty fine" id="works-empty" hidden>아직 작품이 없어요. ‘편집하기’를 누르고 첫 작품을 추가해 보세요.</p>
+    </section>
+
+    <section class="wrap block" aria-labelledby="log-title">
+      <div class="block-head row-head">
+        <div>
+          <p class="hand">cute little steps</p>
+          <h2 class="heading" id="log-title">성장 기록</h2>
+        </div>
+        <button class="pill small edit-only" type="button" data-act="add-log">+ 기록 추가</button>
+      </div>
+      <ol class="timeline" id="timeline"></ol>
+    </section>
+  </main>
+
+  <footer class="footer-band">
+    <div class="wrap">
+      <p class="big" id="footer-line">계속 자라는 중!</p>
+      <p>포트폴리오 공작소 · no. 01 학생 개인 포트폴리오</p>
+    </div>
+  </footer>
+
+  <!-- dialogs -->
+  <dialog id="dlg-profile" class="sheet">
+    <form method="dialog" id="form-profile">
+      <h2 class="heading">프로필 수정</h2>
+      <p class="fine warn">공개적으로 공유할 거라면 실명 대신 별명을, 학교·연락처는 적지 않는 걸 추천해요.</p>
+      <label>이름(또는 별명)<input name="name" maxlength="30" required></label>
+      <div class="two">
+        <label>학년·반<input name="klass" maxlength="20"></label>
+        <label>번호<input name="no" maxlength="10"></label>
+      </div>
+      <label>손글씨 인사말<input name="greeting" maxlength="40"></label>
+      <label>자기소개<textarea name="intro" rows="3" maxlength="300"></textarea></label>
+      <label>강조할 단어 <small>(자기소개 안의 한 단어)</small><input name="highlight" maxlength="20"></label>
+      <label>잘하는 것 <small>(쉼표로 구분)</small><input name="skills" maxlength="300"></label>
+      <label>올해의 목표<textarea name="goal" rows="2" maxlength="200"></textarea></label>
+      <div class="actions"><button class="pill" value="cancel" formnovalidate>취소</button><button class="pill" value="ok">저장</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-project" class="sheet">
+    <form method="dialog" id="form-project">
+      <h2 class="heading" id="project-dlg-title">작품 추가</h2>
+      <label>제목<input name="title" maxlength="60" required></label>
+      <div class="two">
+        <label>분류<input name="category" maxlength="20" list="cat-list" placeholder="예: 과학, 미술"></label>
+        <label>날짜<input name="date" type="date"></label>
+      </div>
+      <datalist id="cat-list"></datalist>
+      <label>설명<textarea name="desc" rows="4" maxlength="600"></textarea></label>
+      <label>링크 <small>(https:// 로 시작, 선택)</small><input name="link" type="url" maxlength="300" placeholder="https://"></label>
+      <label>사진 <small>(선택 · 자동으로 작게 줄여 저장)</small><input name="image" type="file" accept="image/*"></label>
+      <div class="img-preview" id="img-preview" hidden><img alt="선택한 사진 미리보기"><button type="button" class="pill small" id="img-remove">사진 빼기</button></div>
+      <div class="actions"><button class="pill" value="cancel" formnovalidate>취소</button><button class="pill" value="ok">저장</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-log" class="sheet">
+    <form method="dialog" id="form-log">
+      <h2 class="heading">성장 기록</h2>
+      <div class="two">
+        <label>날짜<input name="date" type="date" required></label>
+        <label>한 줄 제목<input name="title" maxlength="60" required></label>
+      </div>
+      <label>배우고 느낀 점<textarea name="text" rows="4" maxlength="600"></textarea></label>
+      <div class="actions"><button class="pill" value="cancel" formnovalidate>취소</button><button class="pill" value="ok">저장</button></div>
+    </form>
+  </dialog>
+
+  <script type="module" src="portfolio.js"></script>
+</body>
+</html>

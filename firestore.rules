@@ -1,0 +1,33 @@
+rules_version = '2';
+// 학생 포트폴리오: 로그인한 본인만 자기 문서를 읽고 쓸 수 있음. 그 외 경로는 전부 거부.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    match /portfolios/{uid} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['profile', 'skills', 'journal', 'projects', 'updated', 'v'])
+        && request.resource.data.profile is map
+        && request.resource.data.skills is list && request.resource.data.skills.size() <= 30
+        && request.resource.data.journal is list && request.resource.data.journal.size() <= 200
+        && request.resource.data.projects is list && request.resource.data.projects.size() <= 60
+        && request.resource.data.updated is string;
+
+      match /images/{workId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid)
+          && request.resource.data.keys().hasOnly(['data'])
+          && request.resource.data.data is string
+          && request.resource.data.data.size() < 600000
+          && request.resource.data.data.matches('^data:image/(jpeg|png|webp);base64,.*');
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

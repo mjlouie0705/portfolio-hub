@@ -81,3 +81,6 @@ body.editing .edit-only { display: inline-flex !important; }
   .p-hero-art { min-height: 0; }
   .work, .goal { break-inside: avoid; box-shadow: none; }
 }
+.head-actions { display: flex; gap: 10px; align-items: center; }
+.head-actions [hidden] { display: none; }
+@media (max-width: 480px) { .head-actions .pill { padding: 8px 14px; font-size: 15px; } }

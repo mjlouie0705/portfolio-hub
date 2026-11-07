@@ -1,6 +1,8 @@
 import { scatter } from '../../assets/stickers.js';
+import * as cloud from './cloud.js';
 
-// 모든 데이터는 이 브라우저의 localStorage에만 저장됩니다. 서버 전송 없음.
+// 로그인 전: 이 브라우저의 localStorage에만 저장(서버 전송 없음).
+// 구글 로그인 후(Firebase 설정 시): 본인 계정의 Firestore 문서에 저장.
 const KEY = 'portfolio-hub:portfolio:v1';
 const COVERS = ['#8a5a36', '#4f86f7', '#f39bc4', '#7fcf98'];
 const MAX_IMAGE_SIDE = 720;
@@ -40,8 +42,14 @@ function load() {
   } catch { /* corrupted or storage blocked → fall back */ }
   return SAMPLE();
 }
+let pushTimer = null;
 function save() {
   state.updated = new Date().toISOString();
+  if (cloud.enabled && cloud.currentUser()) {
+    clearTimeout(pushTimer);
+    pushTimer = setTimeout(() => cloud.push(state).catch(() => toast('클라우드 저장에 실패했어요. 잠시 후 다시 시도해 주세요.')), 600);
+    return;
+  }
   try { localStorage.setItem(KEY, JSON.stringify(state)); }
   catch { toast('저장 공간이 부족해요. 사진 개수를 줄여 보세요.'); }
 }
@@ -321,9 +329,13 @@ const actions = {
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   },
   reset: () => {
-    if (!confirm('이 기기에 저장된 포트폴리오를 모두 지우고 예시로 되돌릴까요? (먼저 내보내기를 해 두면 안전해요)')) return;
+    const signedIn = cloud.enabled && cloud.currentUser();
+    const where = signedIn ? '내 계정(클라우드)에' : '이 기기에';
+    if (!confirm(`${where} 저장된 포트폴리오를 모두 지우고 예시로 되돌릴까요? (먼저 내보내기를 해 두면 안전해요)`)) return;
     try { localStorage.removeItem(KEY); } catch { /* ignore */ }
-    state = SAMPLE(); render(); toast('초기화했어요');
+    state = SAMPLE();
+    if (signedIn) save();
+    render(); toast('초기화했어요');
   },
 };
 document.addEventListener('click', (e) => {
@@ -342,6 +354,50 @@ $('#import-file').addEventListener('change', async (e) => {
     state = next; save(); render(); toast('불러왔어요');
   } catch { toast('포트폴리오 파일이 아니에요'); }
 });
+
+/* ---------- Google login (Firebase) ---------- */
+const authBtn = $('#auth-btn');
+function setPrivacyText(u) {
+  const p = $('#privacy-text');
+  p.replaceChildren();
+  if (u) p.append('✎ 편집 모드예요. 내용은 ', h('strong', '', '내 구글 계정 전용 저장소'), '에 저장되고, 나만 읽고 쓸 수 있어요. 공용 컴퓨터라면 끝나고 꼭 로그아웃하세요.');
+  else p.append('✎ 편집 모드예요. 내용은 ', h('strong', '', '이 기기의 브라우저에만'), ' 저장되고 어디에도 전송되지 않아요. 공용 컴퓨터라면 끝나고 ‘초기화’를 눌러 주세요.');
+}
+async function onUser(u) {
+  authBtn.hidden = false;
+  authBtn.textContent = u ? '로그아웃' : '구글로 로그인';
+  authBtn.title = u ? `${u.displayName || '내 계정'}(으)로 로그인됨` : '';
+  setPrivacyText(u);
+  if (!u) { cloud.resetSync(); state = load(); render(); return; }
+  try {
+    const remote = await cloud.pull();
+    if (remote) {
+      state = sanitize(remote);
+      cloud.markSynced(state);
+    } else {
+      // 첫 로그인: 이 기기의 내용을 계정으로 옮길지 묻기
+      const local = load();
+      const hasLocal = (() => { try { return !!localStorage.getItem(KEY); } catch { return false; } })();
+      state = hasLocal && confirm('이 기기에 저장된 포트폴리오를 내 계정으로 옮길까요?') ? local : SAMPLE();
+      cloud.resetSync();
+      state.updated = new Date().toISOString();
+      await cloud.push(state);
+    }
+    render();
+    toast(`${u.displayName || ''} 님, 반가워요`.trim());
+  } catch {
+    toast('클라우드에서 불러오지 못했어요');
+  }
+}
+authBtn.addEventListener('click', async () => {
+  try {
+    if (cloud.currentUser()) { await cloud.signOut(); toast('로그아웃했어요'); }
+    else await cloud.signIn();
+  } catch (e) {
+    if (e?.code !== 'auth/popup-closed-by-user' && e?.code !== 'auth/cancelled-popup-request') toast('로그인하지 못했어요');
+  }
+});
+cloud.init(onUser).catch(() => { /* SDK를 못 불러오면 이 기기 저장 모드로 계속 */ });
 
 /* ---------- go ---------- */
 render();

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com https://www.gstatic.com; frame-src https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>학생 포트폴리오</title>
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
@@ -20,11 +20,14 @@
       <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 22c0-2 2-3 4-2l2 1V8a2.5 2.5 0 0 1 5 0v9l9 1.5c2.5.4 4 2.4 3.6 4.9L30 31c-.4 2.6-2.6 4-5 4H17c-2 0-3.3-.8-4.4-2.2L8 26z" fill="#fdfbf9" stroke="#171717" stroke-width="2" stroke-linejoin="round"/><path d="M19 17v6M23.5 18v5M28 19v4" stroke="#171717" stroke-width="2" stroke-linecap="round"/></svg>
       <span>허브로</span>
     </a>
-    <button class="pill" id="toggle-edit" type="button" aria-pressed="false">편집하기</button>
+    <div class="head-actions">
+      <button class="pill" id="auth-btn" type="button" hidden>구글로 로그인</button>
+      <button class="pill" id="toggle-edit" type="button" aria-pressed="false">편집하기</button>
+    </div>
   </header>
 
   <div class="wrap toolbar no-print" id="toolbar" hidden>
-    <p class="fine privacy">✎ 편집 모드예요. 내용은 <strong>이 기기의 브라우저에만</strong> 저장되고 어디에도 전송되지 않아요. 공용 컴퓨터라면 끝나고 ‘초기화’를 눌러 주세요.</p>
+    <p class="fine privacy" id="privacy-text">✎ 편집 모드예요. 내용은 <strong>이 기기의 브라우저에만</strong> 저장되고 어디에도 전송되지 않아요. 공용 컴퓨터라면 끝나고 ‘초기화’를 눌러 주세요.</p>
     <div class="tool-row">
       <button class="pill small" type="button" data-act="profile">프로필 수정</button>
       <button class="pill small" type="button" data-act="export">내보내기(.json)</button>
